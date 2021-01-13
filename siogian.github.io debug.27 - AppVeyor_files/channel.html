@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!-- saved from url=(0143)https://js.stripe.com/v2/channel.html?stripe_xdm_e=https%3A%2F%2Fci.appveyor.com&stripe_xdm_c=default125338&stripe_xdm_p=1#__stripe_transport__ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Stripe Internal Communication Channel</title>
+<script>
+if ('postMessage' in window) {
+  var stripeTrack = function(type) {
+    var timestamp = Math.round(new Date().getTime() / 1000);
+    var report = (new Image()).src = "https://q.stripe.com?event=stripejs-error&type=" +
+      encodeURIComponent(type) +
+      "&timestamp=" + timestamp +
+      "&payment_user_agent=channel.html";
+  };
+
+  if (window.parent === window) {
+    stripeTrack('ChannelParentError');
+    window.Stripe = {earlyError: true};
+  }
+  else {
+    window.onload = function() {
+      var matches = window.location.search.match(/(\?|&)stripe_xdm_e=([^&]+)/);
+      if (matches && matches.length >= 3) {
+        var outerdomain = decodeURIComponent(matches[2]);
+        try {
+          window.parent.postMessage('stripe:ack', outerdomain);
+        }
+        catch(e) {
+          stripeTrack('ChannelAckError-' + e.toString());
+        }
+      }
+      else {
+        stripeTrack('ChannelUrlError');
+      }
+    }
+  }
+}
+</script>
+</head>
+<body>
+<script src="./saved_resource"></script>
+
+
+<div class="xl-chrome-ext-bar" id="xl_chrome_ext_{4DB361DE-01F7-4376-B494-639E489D19ED}" style="display: none;">
+      <div class="xl-chrome-ext-bar__logo"></div>
+
+      <a id="xl_chrome_ext_download" href="javascript:;" class="xl-chrome-ext-bar__option">下载视频</a>
+      <a id="xl_chrome_ext_close" href="javascript:;" class="xl-chrome-ext-bar__close"></a>
+    </div></body></html>
